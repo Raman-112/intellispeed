@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Speed Monitoring System</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+
+body {
+    background-color: #f4f4f4;
+    color: #333;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+/* Header Section */
+header {
+    background-color: #333;
+    color: #fff;
+    padding: 20px 0;
+}
+
+header h1 {
+    text-align: center;
+    font-size: 2.5rem;
+    margin-bottom: 10px;
+}
+
+header nav ul {
+    display: flex;
+    justify-content: center;
+    list-style: none;
+}
+
+header nav ul li {
+    margin: 0 20px;
+}
+
+header nav ul li a {
+    color: #fff;
+    text-decoration: none;
+    font-size: 1.1rem;
+}
+
+header nav ul li a:hover {
+    color: #ffcc00;
+}
+
+/* Main Section */
+.main-section {
+    background: #ffcc00;
+    color: #333;
+    padding: 60px 0;
+    text-align: center;
+}
+
+.main-section h2 {
+    font-size: 2.5rem;
+    margin-bottom: 20px;
+}
+
+.main-section p {
+    font-size: 1.2rem;
+    margin-bottom: 30px;
+}
+
+button {
+    background-color: #333;
+    color: #fff;
+    padding: 10px 20px;
+    border: none;
+    cursor: pointer;
+    font-size: 1rem;
+}
+
+button:hover {
+    background-color: #ffcc00;
+    color: #333;
+}
+
+/* History Section */
+.history-section {
+    background-color: #fff;
+    padding: 60px 0;
+    text-align: center;
+}
+
+.history-section h2 {
+    font-size: 2.5rem;
+    margin-bottom: 30px;
+}
+
+#historyList {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.history-item {
+    background-color: #f9f9f9;
+    border: 1px solid #ccc;
+    padding: 15px;
+    margin-bottom: 15px;
+    width: 80%;
+    text-align: left;
+    border-radius: 5px;
+}
+
+.history-item h3 {
+    font-size: 1.2rem;
+    margin-bottom: 10px;
+}
+
+/* About Section */
+.about-section {
+    background-color: #333;
+    color: #fff;
+    padding: 60px 0;
+    text-align: center;
+}
+
+.about-section h2 {
+    font-size: 2.5rem;
+    margin-bottom: 20px;
+}
+
+.about-section p {
+    font-size: 1.2rem;
+}
+
+/* Footer */
+footer {
+    background-color: #222;
+    color: #fff;
+    text-align: center;
+    padding: 20px 0;
+}
+
+footer p {
+    margin: 0;
+}
+
+    </style>
+</head>
+<body>
+    <!-- Header with Navigation -->
+    <header>
+        <div class="container">
+            <h1>Speed Monitoring System</h1>
+            <nav>
+                <ul>
+                    <li><a href="#home">Home</a></li>
+                    <li><a href="#about">About</a></li>
+                    <li><a href="#history">Vehicle History</a></li>
+                    <li><a href="#contact">Contact</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Section -->
+    <section id="home" class="main-section">
+        <div class="container">
+            <h2>Monitor Speeding Vehicles in Real-Time</h2>
+            <p>Our system tracks vehicles in real-time and notifies the authorities of any speeding violations. You can also view the history of vehicles, including their number plate, speed, and the time they were detected.</p>
+            <button id="notifyBtn">Notify Authorities</button>
+        </div>
+    </section>
+
+    <!-- Vehicle History Section -->
+    <section id="history" class="history-section">
+        <div class="container">
+            <h2>Vehicle Speed History</h2>
+            <div id="historyList">
+                <!-- Vehicle history will be appended here -->
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="about-section">
+        <div class="container">
+            <h2>About Our System</h2>
+            <p>Our speed monitoring system is designed to help authorities track and manage speeding violations. With advanced vehicle recognition technology, we capture vehicle details including number plates, speed, and timestamp.</p>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <p>&copy; 2024 Speed Monitoring System. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script >
+        document.getElementById("notifyBtn").addEventListener("click", function() {
+    notifyAuthorities();
+});
+
+function notifyAuthorities() {
+    const vehicle = {
+        numberPlate: generateRandomPlate(),
+        speed: generateRandomSpeed(),
+        time: new Date().toLocaleTimeString()
+    };
+    
+    addVehicleToHistory(vehicle);
+}
+
+function addVehicleToHistory(vehicle) {
+    const historyList = document.getElementById("historyList");
+
+    const historyItem = document.createElement("div");
+    historyItem.classList.add("history-item");
+
+    historyItem.innerHTML = `
+        <h3>Vehicle Number Plate: ${vehicle.numberPlate}</h3>
+        <p>Speed: ${vehicle.speed} km/h</p>
+        <p>Time Detected: ${vehicle.time}</p>
+    `;
+
+    historyList.appendChild(historyItem);
+}
+
+function generateRandomPlate() {
+    const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    const numbers = "0123456789";
+
+    let plate = "";
+    for (let i = 0; i < 2; i++) {
+        plate += letters.charAt(Math.floor(Math.random() * letters.length));
+    }
+    for (let i = 0; i < 4; i++) {
+        plate += numbers.charAt(Math.floor(Math.random() * numbers.length));
+    }
+    return plate;
+}
+
+function generateRandomSpeed() {
+    return Math.floor(Math.random() * (150 - 80 + 1)) + 80;
+}
+
+    </script>
+</body>
+</html>
