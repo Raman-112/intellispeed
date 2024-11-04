@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vehicle Speed Data</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        #all-vehicles, #threshold-vehicles {
+            margin-top: 20px;
+        }
+        .vehicle-data {
+            border: 1px solid #ddd;
+            padding: 10px;
+            margin: 5px;
+        }
+        .buttons {
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Vehicle Speed Data</h1>
+
+    <div class="buttons">
+        <button onclick="fetchVehicleData()">Show All Vehicle Data</button>
+        <button onclick="fetchThresholdVehicles()">Show Vehicles Above Speed Threshold</button>
+    </div>
+
+    <div id="all-vehicles">
+        <h2>All Vehicles</h2>
+    </div>
+
+    <div id="threshold-vehicles">
+        <h2>Vehicles Above Speed Threshold</h2>
+    </div>
+
+    <!-- Firebase SDKs (Using CDN links) -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-database-compat.js"></script>
+
+    <script>
+        // Firebase configuration object
+        const firebaseConfig = {
+            apiKey: "AIzaSyBWomHTJQDxb8Zw5AHCi70k3aaHgQU0YxY",
+            authDomain: "vehiclespeed-a40f7.firebaseapp.com",
+            databaseURL: "https://vehiclespeed-a40f7-default-rtdb.europe-west1.firebasedatabase.app",
+            projectId: "vehiclespeed-a40f7",
+            storageBucket: "vehiclespeed-a40f7.firebasestorage.app",
+            messagingSenderId: "732484662163",
+            appId: "1:732484662163:web:522e90069a36184789ee66"
+        };
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
+
+        // Function to fetch all vehicle data
+        function fetchVehicleData() {
+            const vehicleRef = db.ref("vehicles");
+
+            vehicleRef.once('value', (snapshot) => {
+                const vehicles = snapshot.val();
+                const allVehiclesDiv = document.getElementById('all-vehicles');
+                allVehiclesDiv.innerHTML = '<h2>All Vehicles</h2>';  // Clear previous content
+
+                if (vehicles) {
+                    for (let key in vehicles) {
+                        const vehicle = vehicles[key];
+                        const vehicleData = `
+                            <div class="vehicle-data">
+                                <p><strong>Number Plate:</strong> ${vehicle.number_plate}</p>
+                                <p><strong>Speed:</strong> ${vehicle.speed} km/h</p>
+                                <p><strong>Time Detected:</strong> ${vehicle.time_detected}</p>
+                            </div>
+                        `;
+                        allVehiclesDiv.innerHTML += vehicleData;
+                    }
+                } else {
+                    allVehiclesDiv.innerHTML += '<p>No vehicle data found.</p>';
+                }
+            }, (error) => {
+                console.error("Error fetching vehicle data: ", error);
+            });
+        }
+
+        // Function to fetch vehicle data with a speed threshold
+        function fetchThresholdVehicles() {
+            const threshold = 50;  // Define your threshold value here
+            const vehicleRef = db.ref("vehicles");
+
+            vehicleRef.once('value', (snapshot) => {
+                const vehicles = snapshot.val();
+                const thresholdVehiclesDiv = document.getElementById('threshold-vehicles');
+                thresholdVehiclesDiv.innerHTML = '<h2>Vehicles Above Speed Threshold</h2>';  // Clear previous content
+
+                if (vehicles) {
+                    for (let key in vehicles) {
+                        const vehicle = vehicles[key];
+                        if (vehicle.speed > threshold) {  // Filter based on speed
+                            const vehicleData = `
+                                <div class="vehicle-data">
+                                    <p><strong>Number Plate:</strong> ${vehicle.number_plate}</p>
+                                    <p><strong>Speed:</strong> ${vehicle.speed} km/h</p>
+                                    <p><strong>Time Detected:</strong> ${vehicle.time_detected}</p>
+                                </div>
+                            `;
+                            thresholdVehiclesDiv.innerHTML += vehicleData;
+                        }
+                    }
+                } else {
+                    thresholdVehiclesDiv.innerHTML += '<p>No vehicles found above threshold.</p>';
+                }
+            }, (error) => {
+                console.error("Error fetching threshold vehicle data: ", error);
+            });
+        }
+    </script>
+</body>
+</html>
