@@ -3,52 +3,262 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Vehicle Speed Data</title>
+    <title>Speed Monitoring System</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <style>
+        /* Custom Variables */
+        :root {
+            --primary-color: #0d6efd;
+            --secondary-color: #6c757d;
+            --success-color: #198754;
+            --warning-color: #ffc107;
+            --danger-color: #dc3545;
+        }
+
+        /* General Styles */
         body {
-            font-family: Arial, sans-serif;
+            padding-top: 56px;
         }
-        #all-vehicles, #threshold-vehicles {
-            margin-top: 20px;
+
+        section {
+            padding: 5rem 0;
         }
-        .vehicle-data {
-            border: 1px solid #ddd;
-            padding: 10px;
-            margin: 5px;
+
+        /* Hero Section */
+        .hero-section {
+            background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)),
+                        url('https://images.unsplash.com/photo-1449965408869-eaa3f722e40d?auto=format&fit=crop&q=80');
+            background-size: cover;
+            background-position: center;
+            color: white;
+            padding: 8rem 0;
         }
-        .buttons {
-            margin-top: 10px;
+
+        /* Dashboard Section */
+        .dashboard-section {
+            background-color: #f8f9fa;
+        }
+
+        .dashboard-card {
+            transition: transform 0.3s ease;
+            border: none;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .dashboard-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .card-title {
+            color: var(--secondary-color);
+            font-size: 1.1rem;
+        }
+
+        .display-6 {
+            color: var(--primary-color);
+            font-weight: 600;
+        }
+
+        /* History Section */
+        .history-section {
+            background-color: white;
+        }
+
+        .table {
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        /* About Section */
+        .feature-icon {
+            font-size: 2.5rem;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .dashboard-card, .table {
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        /* Responsive Adjustments */
+        @media (max-width: 768px) {
+            .hero-section {
+                padding: 6rem 0;
+            }
+
+            .display-4 {
+                font-size: 2.5rem;
+            }
+
+            .feature-icon {
+                font-size: 2rem;
+            }
         }
     </style>
 </head>
 <body>
-    <h1>Vehicle Speed Data</h1>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+        <div class="container">
+            <a class="navbar-brand d-flex align-items-center" href="#home">
+                <i class="bi bi-speedometer2 me-2"></i>
+                Speed Monitor
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="#home">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#dashboard">Dashboard</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#history">History</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#about">About</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
 
-    <div class="buttons">
-        <button onclick="fetchVehicleData()">Show All Vehicle Data</button>
-        <button onclick="fetchThresholdVehicles()">Show Vehicles Above Speed Threshold</button>
-    </div>
+    <!-- Hero Section -->
+    <section id="home" class="hero-section text-center">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-8">
+                    <h1 class="display-4 fw-bold mb-4">Intelligent Speed Monitoring</h1>
+                    <p class="lead mb-4">Advanced real-time vehicle tracking and speed monitoring system with instant violation detection and reporting.</p>
+                    <button id="startMonitoring" class="btn btn-primary btn-lg">
+                        <i class="bi bi-play-circle me-2"></i>Start Monitoring
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
 
-    <div id="all-vehicles">
-        <h2>All Vehicles</h2>
-    </div>
+    <!-- Dashboard Section -->
+    <section id="dashboard" class="dashboard-section">
+        <div class="container">
+            <h2 class="text-center mb-5">Live Dashboard</h2>
+            <div class="row g-4">
+                <div class="col-md-4">
+                    <div class="card dashboard-card">
+                        <div class="card-body">
+                            <h5 class="card-title">
+                                <i class="bi bi-car-front me-2"></i>Total Vehicles
+                            </h5>
+                            <p id="totalVehicles" class="display-6">0</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card dashboard-card">
+                        <div class="card-body">
+                            <h5 class="card-title">
+                                <i class="bi bi-exclamation-triangle me-2"></i>Violations
+                            </h5>
+                            <p id="totalViolations" class="display-6">0</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card dashboard-card">
+                        <div class="card-body">
+                            <h5 class="card-title">
+                                <i class="bi bi-speedometer me-2"></i>Avg Speed
+                            </h5>
+                            <p id="avgSpeed" class="display-6">0 km/h</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
 
-    <div id="threshold-vehicles">
-        <h2>Vehicles Above Speed Threshold</h2>
-    </div>
+    <!-- History Section -->
+    <section id="history" class="history-section">
+        <div class="container">
+            <h2 class="text-center mb-5">Vehicle History</h2>
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>License Plate</th>
+                            <th>Speed</th>
+                            <th>Time</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="historyTableBody"></tbody>
+                </table>
+            </div>
+        </div>
+    </section>
 
-    <!-- Firebase SDKs (Using CDN links) -->
+    <!-- About Section -->
+    <section id="about" class="about-section bg-dark text-light">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-8 text-center">
+                    <h2 class="mb-4">About Our System</h2>
+                    <p class="lead">Our advanced speed monitoring system utilizes cutting-edge technology to ensure road safety and compliance with speed regulations. Features include:</p>
+                    <div class="row mt-5">
+                        <div class="col-md-4">
+                            <i class="bi bi-camera-fill feature-icon"></i>
+                            <h4>Real-time Detection</h4>
+                            <p>Instant vehicle recognition and speed measurement</p>
+                        </div>
+                        <div class="col-md-4">
+                            <i class="bi bi-graph-up feature-icon"></i>
+                            <h4>Analytics</h4>
+                            <p>Comprehensive data analysis and reporting</p>
+                        </div>
+                        <div class="col-md-4">
+                            <i class="bi bi-bell-fill feature-icon"></i>
+                            <h4>Instant Alerts</h4>
+                            <p>Immediate notification of speed violations</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-dark text-light py-4">
+        <div class="container text-center">
+            <p class="mb-0">&copy; 2024 Speed Monitoring System. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <!-- Firebase SDKs -->
     <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-database-compat.js"></script>
-
     <script>
-        // Firebase configuration object
+        // Firebase configuration
         const firebaseConfig = {
             apiKey: "AIzaSyBWomHTJQDxb8Zw5AHCi70k3aaHgQU0YxY",
             authDomain: "vehiclespeed-a40f7.firebaseapp.com",
             databaseURL: "https://vehiclespeed-a40f7-default-rtdb.europe-west1.firebasedatabase.app",
             projectId: "vehiclespeed-a40f7",
-            storageBucket: "vehiclespeed-a40f7.firebasestorage.app",
+            storageBucket: "vehiclespeed-a40f7.firebaseapp.com",
             messagingSenderId: "732484662163",
             appId: "1:732484662163:web:522e90069a36184789ee66"
         };
@@ -57,66 +267,85 @@
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
 
-        // Function to fetch all vehicle data
+        // Global variables for tracking
+        let totalVehicles = 0;
+        let totalViolations = 0;
+        let speedSum = 0;
+        const SPEED_LIMIT = 100; // Speed limit in km/h
+
+        // DOM Elements
+        const totalVehiclesEl = document.getElementById('totalVehicles');
+        const totalViolationsEl = document.getElementById('totalViolations');
+        const avgSpeedEl = document.getElementById('avgSpeed');
+        const historyTableBody = document.getElementById('historyTableBody');
+
+        // Fetch and update dashboard and history
         function fetchVehicleData() {
-            const vehicleRef = db.ref("vehicles");
-
-            vehicleRef.once('value', (snapshot) => {
+            db.ref('vehicles').on('value', (snapshot) => {
                 const vehicles = snapshot.val();
-                const allVehiclesDiv = document.getElementById('all-vehicles');
-                allVehiclesDiv.innerHTML = '<h2>All Vehicles</h2>';  // Clear previous content
+                if (!vehicles) return;
 
-                if (vehicles) {
-                    for (let key in vehicles) {
-                        const vehicle = vehicles[key];
-                        const vehicleData = `
-                            <div class="vehicle-data">
-                                <p><strong>Number Plate:</strong> ${vehicle.number_plate}</p>
-                                <p><strong>Speed:</strong> ${vehicle.speed} km/h</p>
-                                <p><strong>Time Detected:</strong> ${vehicle.time_detected}</p>
-                            </div>
-                        `;
-                        allVehiclesDiv.innerHTML += vehicleData;
+                totalVehicles = 0;
+                totalViolations = 0;
+                speedSum = 0;
+                historyTableBody.innerHTML = ''; // Clear previous history entries
+
+                for (const key in vehicles) {
+                    const vehicle = vehicles[key];
+                    totalVehicles++;
+                    speedSum += vehicle.speed;
+
+                    if (vehicle.speed > SPEED_LIMIT) {
+                        totalViolations++;
                     }
-                } else {
-                    allVehiclesDiv.innerHTML += '<p>No vehicle data found.</p>';
+
+                    addToHistory(vehicle);
                 }
-            }, (error) => {
-                console.error("Error fetching vehicle data: ", error);
+
+                updateDashboard();
             });
         }
 
-        // Function to fetch vehicle data with a speed threshold
-        function fetchThresholdVehicles() {
-            const threshold = 50;  // Define your threshold value here
-            const vehicleRef = db.ref("vehicles");
-
-            vehicleRef.once('value', (snapshot) => {
-                const vehicles = snapshot.val();
-                const thresholdVehiclesDiv = document.getElementById('threshold-vehicles');
-                thresholdVehiclesDiv.innerHTML = '<h2>Vehicles Above Speed Threshold</h2>';  // Clear previous content
-
-                if (vehicles) {
-                    for (let key in vehicles) {
-                        const vehicle = vehicles[key];
-                        if (vehicle.speed > threshold) {  // Filter based on speed
-                            const vehicleData = `
-                                <div class="vehicle-data">
-                                    <p><strong>Number Plate:</strong> ${vehicle.number_plate}</p>
-                                    <p><strong>Speed:</strong> ${vehicle.speed} km/h</p>
-                                    <p><strong>Time Detected:</strong> ${vehicle.time_detected}</p>
-                                </div>
-                            `;
-                            thresholdVehiclesDiv.innerHTML += vehicleData;
-                        }
-                    }
-                } else {
-                    thresholdVehiclesDiv.innerHTML += '<p>No vehicles found above threshold.</p>';
-                }
-            }, (error) => {
-                console.error("Error fetching threshold vehicle data: ", error);
-            });
+        function updateDashboard() {
+            totalVehiclesEl.textContent = totalVehicles;
+            totalViolationsEl.textContent = totalViolations;
+            avgSpeedEl.textContent = `${Math.round(speedSum / totalVehicles)} km/h`;
         }
+
+        function addToHistory(vehicle) {
+            const row = document.createElement('tr');
+            const isViolation = vehicle.speed > SPEED_LIMIT;
+
+            // Ensure values are defined or use "Unknown"
+            const licensePlate = vehicle.number_plate || "Unknown";
+            const speed = vehicle.speed !== undefined ? vehicle.speed : "0";
+            const timeDetected = vehicle.time_detected || "Unknown";
+
+            // Format speed and time detected
+            const formattedSpeed = `${speed} km/h`;
+            const formattedTime = timeDetected !== "Unknown" ? new Date(timeDetected).toLocaleString() : "Unknown";
+
+            // Create row with correct values
+            row.innerHTML = `
+                <td>${licensePlate}</td>
+                <td>${formattedSpeed}</td>
+                <td>${formattedTime}</td>
+                <td>
+                    <span class="badge ${isViolation ? 'bg-danger' : 'bg-success'}">
+                        ${isViolation ? 'Violation' : 'Normal'}
+                    </span>
+                </td>
+            `;
+
+            // Add animation class
+            row.style.animation = 'fadeIn 0.5s ease-out';
+
+            // Insert into the table (no limit on number of entries)
+            historyTableBody.appendChild(row);
+        }
+
+        // Fetch vehicle data on page load
+        fetchVehicleData();
     </script>
 </body>
 </html>
